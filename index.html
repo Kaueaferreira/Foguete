@@ -81,7 +81,17 @@
         <div class="info-dados">
           <label>Peso do Foguete (kg): <input type="number" id="pesoFoguete" value="1" min="0.1" step="0.1"/></label>
           <label>Peso do Hover (kg): <input type="number" id="pesoHover" value="0.5" min="0.1" step="0.1"/></label>
-          <label>Força do Disparo (PSI): <input type="number" id="forcaDisparo" value="50" min="10" max="200"/></label>
+          
+          <!-- Substituição do input de PSI pelo manômetro -->
+          <div class="manometro-container">
+            <canvas id="manometro" width="200" height="200"></canvas>
+            <div class="controle">
+              <label for="psiRange">Pressão (PSI): <span id="psiValue">50</span></label>
+              <input type="range" id="psiRange" min="10" max="200" step="1" value="50" />
+            </div>
+          </div>
+          
+          <p><strong>Velocidade Máxima:</strong> <span id="maxVelocity">0</span> m/s</p>
           <p><strong>Altitude Máxima:</strong> <span id="maxAltitude">0</span> m</p>
         </div>
 

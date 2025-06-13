@@ -1,11 +1,101 @@
+// Configuração do Manômetro
+const manometroCanvas = document.getElementById('manometro');
+const manometroCtx = manometroCanvas.getContext('2d');
+const psiRange = document.getElementById('psiRange');
+const psiValue = document.getElementById('psiValue');
+
+const centerX = manometroCanvas.width / 2;
+const centerY = manometroCanvas.height / 2;
+const radius = 80;
+
+function drawDial() {
+  manometroCtx.clearRect(0, 0, manometroCanvas.width, manometroCanvas.height);
+
+  // Fundo circular
+  let gradient = manometroCtx.createRadialGradient(centerX, centerY, radius * 0.7, centerX, centerY, radius);
+  gradient.addColorStop(0, '#ff3b3b');
+  gradient.addColorStop(1, '#330000');
+  manometroCtx.fillStyle = gradient;
+  manometroCtx.beginPath();
+  manometroCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  manometroCtx.fill();
+
+  // Círculo interno
+  manometroCtx.fillStyle = '#121212';
+  manometroCtx.beginPath();
+  manometroCtx.arc(centerX, centerY, radius * 0.85, 0, Math.PI * 2);
+  manometroCtx.fill();
+
+  // Marcações
+  manometroCtx.strokeStyle = '#ff3b3b';
+  manometroCtx.lineWidth = 2;
+  for (let i = 0; i <= 200; i += 20) {
+    let angle = (Math.PI * 1.5) * (i / 200) + Math.PI * 0.75;
+    let innerRadius = radius * 0.8;
+    let outerRadius = radius * 0.9;
+    let x1 = centerX + innerRadius * Math.cos(angle);
+    let y1 = centerY + innerRadius * Math.sin(angle);
+    let x2 = centerX + outerRadius * Math.cos(angle);
+    let y2 = centerY + outerRadius * Math.sin(angle);
+    manometroCtx.beginPath();
+    manometroCtx.moveTo(x1, y1);
+    manometroCtx.lineTo(x2, y2);
+    manometroCtx.stroke();
+
+    // Número
+    manometroCtx.fillStyle = '#ff3b3b';
+    manometroCtx.font = '12px Segoe UI';
+    manometroCtx.textAlign = 'center';
+    manometroCtx.textBaseline = 'middle';
+    let numRadius = radius * 0.7;
+    let xNum = centerX + numRadius * Math.cos(angle);
+    let yNum = centerY + numRadius * Math.sin(angle);
+    manometroCtx.fillText(i, xNum, yNum);
+  }
+}
+
+function drawPointer(psi) {
+  let maxPsi = 200;
+  let angle = (Math.PI * 1.5) * (psi / maxPsi) + Math.PI * 0.75;
+
+  manometroCtx.strokeStyle = '#ff3b3b';
+  manometroCtx.lineWidth = 3;
+  manometroCtx.beginPath();
+  manometroCtx.moveTo(centerX, centerY);
+  let pointerLength = radius * 0.75;
+  manometroCtx.lineTo(centerX + pointerLength * Math.cos(angle), centerY + pointerLength * Math.sin(angle));
+  manometroCtx.stroke();
+
+  // Círculo central
+  manometroCtx.fillStyle = '#ff3b3b';
+  manometroCtx.beginPath();
+  manometroCtx.arc(centerX, centerY, 8, 0, Math.PI * 2);
+  manometroCtx.fill();
+}
+
+function updateManometro(value) {
+  drawDial();
+  drawPointer(value);
+  psiValue.textContent = value;
+}
+
+psiRange.addEventListener('input', (e) => {
+  updateManometro(Number(e.target.value));
+});
+
+// Inicializa o manômetro
+updateManometro(50);
+
+// Configuração do Foguete
 const canvas = document.getElementById("canvasFoguete");
 const ctx = canvas.getContext("2d");
-
 const btn = document.getElementById("btnDisparo");
 const maxAltitudeEl = document.getElementById("maxAltitude");
+const maxVelocityEl = document.getElementById("maxVelocity");
 
 let fogueteY = 500;
-let velocidade = 0;
+let velocidadeAtual = 0;
+let velocidadeMaxima = 0;
 let gravidade = 9.8;
 let emVoo = false;
 let subindo = true;
@@ -27,6 +117,9 @@ function resetarSimulacao() {
   hoverAtivo = false;
   linhaMax = null;
   maxAltitudeEl.textContent = "0";
+  maxVelocityEl.textContent = "0";
+  velocidadeAtual = 0;
+  velocidadeMaxima = 0;
 }
 
 function desenharFoguete() {
@@ -98,10 +191,16 @@ function loop() {
 
   if (emVoo) {
     if (subindo) {
-      fogueteY -= velocidade;
-      velocidade -= gravidade * 0.05;
+      fogueteY -= velocidadeAtual;
+      velocidadeAtual -= gravidade * 0.05;
+      
+      // Atualiza a velocidade máxima
+      if (velocidadeAtual > velocidadeMaxima) {
+        velocidadeMaxima = velocidadeAtual;
+        maxVelocityEl.textContent = velocidadeMaxima.toFixed(2);
+      }
 
-      if (velocidade <= 0) {
+      if (velocidadeAtual <= 0) {
         subindo = false;
         linhaMax = fogueteY;
         maxAltitudeEl.textContent = Math.round((500 - fogueteY) * 0.5);
@@ -142,14 +241,17 @@ btn.addEventListener("click", () => {
 
   const pesoFoguete = parseFloat(document.getElementById("pesoFoguete").value);
   const pesoHover = parseFloat(document.getElementById("pesoHover").value);
-  const forcaDisparo = parseFloat(document.getElementById("forcaDisparo").value);
+  const forcaDisparo = parseFloat(psiRange.value);
 
   const massaTotal = pesoFoguete + pesoHover;
-  velocidade = (forcaDisparo / massaTotal) * 0.8;
+  velocidadeAtual = (forcaDisparo / massaTotal) * 0.8;
+  velocidadeMaxima = 0;
+  maxVelocityEl.textContent = "0";
 
   emVoo = true;
   subindo = true;
   btn.textContent = "Parar Simulação";
 });
 
+// Inicia o loop do foguete
 loop();
