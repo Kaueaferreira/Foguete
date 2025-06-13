@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulador de Foguete</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador de Foguete com Hover</h1>
+    <div class="sim-row">
+      <canvas id="canvasFoguete" width="800" height="600"></canvas>
+
+      <div class="info-panel">
+        <div class="info">
+            <strong>Conceitos Físicos Aplicados na Simulação:</strong>
+
+            <p>Esta simulação considera princípios básicos da física para estimar o comportamento de um foguete impulsionado por ar comprimido. As equações utilizadas são fundamentais para compreender a altura atingida, a energia envolvida no lançamento e o impacto da massa total sobre o desempenho do sistema.</p>
+
+            <p><strong>1. Altura Máxima (h):</strong></p>
+
+            <p>A fórmula utilizada para estimar a altitude máxima é baseada no princípio da conservação da energia mecânica:</p>
+
+            <p style="text-align:center;"><em>h = v<sup>2</sup> / 2g</em></p>
+
+            <p>Onde:<br>
+            - <em>h</em> é a altura máxima (em metros);<br>
+            - <em>v</em> é a velocidade inicial (em m/s);<br>
+            - <em>g</em> é a aceleração da gravidade (aproximadamente 9,8 m/s<sup>2</sup>).</p>
+
+            <p>Essa equação considera que toda a energia cinética do foguete no momento do lançamento é convertida em energia potencial gravitacional no ponto mais alto do voo.</p>
+
+            <p><strong>2. Energia Cinética (Ec):</strong></p>
+
+            <p style="text-align:center;"><em>Ec = ½ m v<sup>2</sup></em></p>
+
+            <p>Onde:<br>
+            - <em>m</em> é a massa total do foguete (em kg), incluindo o hover ou carga útil;<br>
+            - <em>v</em> é a velocidade no instante do lançamento (em m/s).</p>
+
+            <p>Essa energia é diretamente proporcional à massa e ao quadrado da velocidade, o que mostra a importância da redução de peso e do aumento da velocidade para maximizar o alcance.</p>
+
+            <p><strong>3. Impacto da Massa Total:</strong></p>
+
+            <p>A massa do foguete somada à do hover influencia diretamente a altura atingida. Quanto maior a massa total, maior a força necessária para alcançar a mesma aceleração. Portanto, foguetes mais leves tendem a atingir altitudes maiores com a mesma pressão de lançamento.</p>
+
+            <p><strong>Pressão de Lançamento (PSI) e Conversão em Força</strong></p>
+
+            <p>A unidade PSI (<em>pounds per square inch</em> ou libras por polegada quadrada) é utilizada para representar a <em>pressão interna do sistema de lançamento</em>, ou seja, o quanto de ar comprimido está armazenado no reservatório do foguete.</p>
+
+            <p>Para transformar essa pressão em uma força útil que impulsiona o foguete, utilizamos a fórmula:</p>
+
+            <p style="text-align:center;"><em>F = P × A</em></p>
+
+            <p>Onde:<br>
+            - <em>F</em> é a força (em Newtons);<br>
+            - <em>P</em> é a pressão (em Pascal);<br>
+            - <em>A</em> é a área da saída do bico (em m²).</p>
+
+            <p><strong>Conversão de PSI para Pascal:</strong></p>
+
+            <p style="text-align:center;"><em>1 PSI = 6894.76 Pa</em></p>
+
+            <p>Então, se aplicarmos 50 PSI:</p>
+
+            <p style="text-align:center;"><em>P = 50 × 6894.76 ≈ 344738 Pa</em></p>
+
+            <p>Se a área da saída do bico for, por exemplo, 0,0005 m²:</p>
+
+            <p style="text-align:center;"><em>F = 344738 × 0.0005 = 172.37 N</em></p>
+
+            <p>Essa é a força que atua brevemente no foguete, empurrando-o para cima. Essa força inicial determina a <em>aceleração e a velocidade inicial</em>, que por sua vez influenciam diretamente a altura máxima atingida.</p>
+
+            <p><strong>Conclusão:</strong></p>
+
+            <p>A simulação modela de forma simplificada a dinâmica de um foguete com base em pressão de ar, massa e gravidade. Apesar das simplificações, os fundamentos são reais e refletem a importância do equilíbrio entre massa e força de impulso para alcançar o desempenho ideal em projetos de propulsão.</p>
+
+        </div>
+
+        <div class="info-dados">
+          <label>Peso do Foguete (kg): <input type="number" id="pesoFoguete" value="1" min="0.1" step="0.1"/></label>
+          <label>Peso do Hover (kg): <input type="number" id="pesoHover" value="0.5" min="0.1" step="0.1"/></label>
+          <label>Força do Disparo (PSI): <input type="number" id="forcaDisparo" value="50" min="10" max="200"/></label>
+          <p><strong>Altitude Máxima:</strong> <span id="maxAltitude">0</span> m</p>
+        </div>
+
+        <button id="btnDisparo">Acionar Foguete</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
