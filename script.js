@@ -203,7 +203,7 @@ function loop() {
       if (velocidadeAtual <= 0) {
         subindo = false;
         linhaMax = fogueteY;
-        maxAltitudeEl.textContent = Math.round((500 - fogueteY) * 0.5);
+        maxAltitudeEl.textContent = Math.round((500 - fogueteY) * 0.08);
       }
     } else {
       fogueteY += gravidade * 0.5;
@@ -244,7 +244,7 @@ btn.addEventListener("click", () => {
   const forcaDisparo = parseFloat(psiRange.value);
 
   const massaTotal = pesoFoguete + pesoHover;
-  velocidadeAtual = (forcaDisparo / massaTotal) * 0.8;
+  velocidadeAtual = (forcaDisparo / massaTotal) * 0.1;
   velocidadeMaxima = 0;
   maxVelocityEl.textContent = "0";
 
